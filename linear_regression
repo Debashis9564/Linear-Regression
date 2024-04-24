@@ -62,3 +62,43 @@ def add_bias_variable(X):
     n = X.shape[0]
     X_b = np.concatenate((np.ones((n,1)),X), axis=1)
     return X_b
+
+
+########################################### Example  ################################
+
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from mpl_toolkits.mplot3d import Axes3D
+import plotly.graph_objs as go
+# Generate some random data
+np.random.seed(0)
+X1 = 2 * np.random.rand(100, 1)
+X2 = 3 * np.random.rand(100, 1)
+X = np.c_[X1, X2]
+y =4 + 3 * X1 + 2*X2 + np.random.randn(100, 1)
+
+# print('X:', X)
+# print('y:', y)
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+X_train_b = add_bias_variable(X_train)
+X_test_b = add_bias_variable(X_test)
+
+# print('X_train_b:', X_train_b)
+# Define hyperparameters
+learning_rate = 0.001
+# Run gradient descent
+theta, error_at_each_step = gradient_descent(X_train_b, y_train, learning_rate)
+print(theta)
+
+optimized_y_test = [np.dot(X_test_b[i], theta) for i in range(X_test.shape[0])]
+
+# Create a 3D plot
+
+# Create a 3D scatter plot
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(X1, X2, y, c='r', marker='o', label= 'actual')
+ax.scatter(X_test[:,0], X_test[:,1], optimized_y_test, c='g', marker='o', label= 'predict')
+plt.legend()
